@@ -13,7 +13,8 @@ steps:
   - name: Aksiyon tanımla
     detail: >
       Project Settings > Input Map sekmesinde "move_left", "move_right", "jump"
-      gibi aksiyonlar oluştur, tuş ve gamepad düğmelerini eşle.
+      (ve top-down için "move_up", "move_down") gibi aksiyonlar oluştur,
+      tuş ve gamepad düğmelerini eşle.
   - name: Girdileri oku
     detail: >
       Input.is_action_pressed() (sürekli), Input.is_action_just_pressed() (tek sefer),

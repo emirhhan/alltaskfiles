@@ -1,8 +1,9 @@
 # Skills — İndeks
 
 Bu klasör Fusion Game agent'larının kimlik ve çalışma yöntemi dosyalarını tutar.
-Her skill, `fusion_game_birlesik_mimari_ve_uygulama_plani.md` Bölüm 6'daki
-agent mimarisine karşılık gelir.
+Her skill, Fusion Game agent mimarisine karşılık gelir; hiyerarşi ve
+dispatch akışı için `agent-templates/director_dispatch.md` ve
+`agent-templates/INDEX.md` dosyalarına bak.
 
 | Dosya | Rol | Sorumlu olduğu | Tetikleyen |
 |---|---|---|---|

@@ -30,6 +30,6 @@ godot_2d_platformer/
 ```
 
 ## İpuçları
-- Zıplama için `ui_accept` aksiyonuna Space/Spacebar eşlidir (project.godot'da).
+- Zıplama için `jump` aksiyonuna Space/Spacebar eşlidir (project.godot'da).
 - Yeni zemin eklemek için StaticBody2D + CollisionShape2D kullan.
 - Daha fazla sistem için `recipes/godot/` klasörüne bak.

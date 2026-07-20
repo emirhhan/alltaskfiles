@@ -5,9 +5,8 @@ const OBSTACLE := preload("res://scenes/obstacle.tscn")
 @export var spawn_interval: float = 1.4
 var _game_over := false
 
-@onready var player: CharacterBody2D = $Player
 @onready var spawn_timer: Timer = $SpawnTimer
-@onready var ground: Node2D = $Ground
+@onready var ground: Node2D = get_node("../Ground")
 
 func _ready() -> void:
 	spawn_timer.wait_time = spawn_interval
@@ -27,7 +26,7 @@ func _on_spawn() -> void:
 		return
 	var o := OBSTACLE.instantiate()
 	o.position = Vector2(1100, 540)
-	add_child(o)
+	get_parent().add_child(o)
 
 func game_over() -> void:
 	_game_over = true
