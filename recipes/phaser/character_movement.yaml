@@ -1,0 +1,54 @@
+recipe: phaser_character_movement
+engine: phaser
+engine_version: "3.x"
+language: javascript
+description: >
+  Arcade Physics ile 2D karakter hareketi. Klavye girdisi, çapraz hız
+  normalizasyonu, yerçekimi ve zıplama.
+official_source: https://docs.phaser.io/api-documentation/class/arcade-body
+dependencies:
+  - this.physics.add.sprite
+  - this.input.keyboard.createCursorKeys
+  - body.setVelocity / setGravityY
+steps:
+  - name: Sahne ve fizik kur
+    detail: >
+      game config'de physics: { default: 'arcade', arcade: { gravity: { y: 980 } } } ayarla.
+  - name: Sprite oluştur
+    detail: >
+      this.player = this.physics.add.sprite(x, y, 'hero'); collider ile zemine bağla.
+  - name: Hareket
+    detail: >
+      update() içinde cursor keys'ten yön al, setVelocityX; yerdeyse zıplama.
+code_snippet: |
+  // Scene içinde
+  create() {
+    this.player = this.physics.add.sprite(100, 300, 'hero');
+    this.player.setCollideWorldBounds(true);
+    this.cursors = this.input.keyboard.createCursorKeys();
+  }
+
+  update() {
+    const speed = 200;
+    const onFloor = this.player.body.blocked.down || this.player.body.touching.down;
+    if (this.cursors.left.isDown) {
+      this.player.setVelocityX(-speed);
+    } else if (this.cursors.right.isDown) {
+      this.player.setVelocityX(speed);
+    } else {
+      this.player.setVelocityX(0);
+    }
+    // Çapraz normalizasyon: yatay+zıplama zaten ayrı eksen
+    if (this.cursors.up.isDown && onFloor) {
+      this.player.setVelocityY(-500);
+    }
+  }
+validation:
+  - movement_works
+  - diagonal_speed_normalized
+  - collision_works
+  - mobile_input_supported
+notes: >
+  - Arcade physics yalınca AABB çarpışması; eğik zemin için Matter.js gerekir.
+  - setVelocity her frame sıfırlanmalı (yoksa sürekli hızlanır).
+  - Mobil için cursor yerine pointer/joystick kullan (bkz. mobile_control).

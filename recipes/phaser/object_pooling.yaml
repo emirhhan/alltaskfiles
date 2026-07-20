@@ -1,0 +1,50 @@
+recipe: phaser_object_pooling
+engine: phaser
+engine_version: "3.x"
+language: javascript
+description: >
+  Group + maxSize ile nesne havuzu (object pool). Mermi/düşman gibi sık
+  oluşan nesnelerin performansını artırır (killAndHide / get).
+official_source: https://docs.phaser.io/api-documentation/class/game-objects-group
+dependencies:
+  - this.physics.add.group({ maxSize, ... })
+  - group.get / group.killAndHide
+  - group.getChildren
+steps:
+  - name: Havuz grubu
+    detail: >
+      this.bullets = this.physics.add.group({ defaultKey: 'bullet', maxSize: 50 });
+  - name: Al (get)
+    detail: >
+      const b = this.bullets.get(x, y); if (!b) return; b.setActive(true).setVisible(true);
+  - name: Geri ver (release)
+    detail: >
+      b.disableBody(true, true) veya group.killAndHide(b) ile havuza iade.
+code_snippet: |
+  create() {
+    this.bullets = this.physics.add.group({
+      defaultKey: 'bullet',
+      maxSize: 50
+    });
+  }
+
+  fireBullet(x, y) {
+    const b = this.bullets.get(x, y);
+    if (!b) return; // havuz dolu
+    b.setActive(true).setVisible(true);
+    b.enableBody(true, x, y, true, true);
+    b.setVelocity(0, -400);
+  }
+
+  // Çarpışmada
+  hitEnemy(bullet, enemy) {
+    bullet.disableBody(true, true); // havuza geri ver
+  }
+validation:
+  - pool_prefilled
+  - acquire_returns_inactive
+  - release_returns_to_pool
+notes: >
+  - maxSize dolunca get() null döner; spawn sistemi bunu kontrol etmeli.
+  - disenableBody(true, true) hem pasif yapar hem görünmez.
+  - Çok büyük maxSize bellek tüketir; gerçek ihtiyaç + %20 tampon.

@@ -1,0 +1,37 @@
+recipe: phaser_camera
+engine: phaser
+engine_version: "3.x"
+language: javascript
+description: >
+  Camera startFollow, setBounds, lerp (yumuşatma) ve zoom ile karakteri
+  takip eden kamera.
+official_source: https://docs.phaser.io/api-documentation/class/cameras-scene2d-camera
+dependencies:
+  - this.cameras.main
+  - camera.startFollow
+  - camera.setBounds
+steps:
+  - name: Takip et
+    detail: >
+      this.cameras.main.startFollow(this.player, true, 0.08, 0.08) ile yumuşatılmış takip.
+  - name: Sınırla
+    detail: >
+      camera.setBounds(0, 0, worldWidth, worldHeight) ile kamera harita dışına çıkmaz.
+  - name: Zoom
+    detail: >
+      camera.setZoom(1.2) ile yakınlaştır; setDeadzone ile merkez esnekliği.
+code_snippet: |
+  create() {
+    this.cameras.main.setBounds(0, 0, 2048, 1024);
+    this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
+    this.cameras.main.setDeadzone(100, 80);
+    // this.cameras.main.setZoom(1.2);
+  }
+validation:
+  - camera_follows_target
+  - camera_smoothing_works
+  - camera_limits_respected
+notes: >
+  - startFollow 2. ve 3. parametre lerpX/lerpY (0-1 arası, düşük = yumuşak).
+  - Birden fazla kamera için this.cameras.add() kullan.
+  - Web'de çok büyük world performansı etkiler; bounds kullan.

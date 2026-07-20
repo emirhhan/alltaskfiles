@@ -1,0 +1,52 @@
+recipe: godot_mobile_control
+engine: godot
+engine_version: "4.x"
+language: gdscript
+description: >
+  Dokunmatik ekran (touch) girişi, sanal joystick ve InputEventScreenTouch/Drag
+  ile mobil kontrol desteği.
+official_source: https://docs.godotengine.org/en/stable/classes/class_inputeventscreentouch.html
+dependencies:
+  - InputEventScreenTouch
+  - InputEventScreenDrag
+  - (UI) TextureButton / Control (sanal butonlar)
+steps:
+  - name: Dokunma tespiti
+    detail: >
+      _input(event) içinde event is InputEventScreenTouch / ScreenDrag kontrolü yap.
+  - name: Sanal joystick
+    detail: >
+      Sol alt köşede bir Control + TextureButton; basılı tutulunca drag vektörünü al.
+  - name: Aksiyon eşleme
+    detail: >
+      Dokunma durumunu bir Dictionary'de tut, _physics_process'te Input.get_axis yerine bunu kullan.
+code_snippet: |
+  extends Node
+
+  var touch_vector := Vector2.ZERO
+  var _joy_active := false
+  var _joy_origin := Vector2.ZERO
+  const JOY_RADIUS := 60.0
+
+  func _input(event: InputEvent) -> void:
+      if event is InputEventScreenDrag and _joy_active:
+          var delta := event.position - _joy_origin
+          touch_vector = delta.limit_length(JOY_RADIUS) / JOY_RADIUS
+      elif event is InputEventScreenTouch:
+          if event.pressed and event.position.x < 200 and event.position.y > 400:
+              _joy_active = true
+              _joy_origin = event.position
+          elif not event.pressed:
+              _joy_active = false
+              touch_vector = Vector2.ZERO
+
+  func get_move_direction() -> Vector2:
+      return touch_vector
+validation:
+  - touch_detected
+  - virtual_joystick_works
+  - mobile_input_supported
+notes: >
+  - Aynı aksiyonları Input Map'te touch event'lerine de eşleyerek klavye/kod birleşebilir.
+  - iOS/Android export'ta "Internet" ve "Access WiFi" izinlerine dikkat (gereksizse kapat).
+  - Ekran çözünürlüğü farkı için anchor kullan, sabit piksel koyma.

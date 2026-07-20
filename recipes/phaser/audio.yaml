@@ -1,0 +1,46 @@
+recipe: phaser_audio
+engine: phaser
+engine_version: "3.x"
+language: javascript
+description: >
+  this.sound.add / play ile ses yönetimi; müzik ve SFX ayrımı, ses havuzu
+  ve tarayıcı autoplay politikası yönetimi.
+official_source: https://docs.phaser.io/api-documentation/sound/soundmanager
+dependencies:
+  - this.sound.add (preload'da this.load.audio)
+  - this.sound.play
+  - this.sound.volume
+steps:
+  - name: Yükle
+    detail: >
+      preload'da this.load.audio('jump', 'sfx/jump.mp3'); müzik için ayrı key.
+  - name: Çal
+    detail: >
+      this.sound.play('jump', { volume: 0.5 }); müzik için loop: true.
+  - name: Ses aç/kapa
+    detail: >
+      this.sound.volume = 0.5; veya this.sound.mute = true.
+code_snippet: |
+  preload() {
+    this.load.audio('jump', 'assets/sfx/jump.mp3');
+    this.load.audio('bgm', 'assets/music/bgm.mp3');
+  }
+
+  create() {
+    this.sfxJump = this.sound.add('jump', { volume: 0.5 });
+    this.bgm = this.sound.add('bgm', { loop: true, volume: 0.3 });
+    // İlk kullanıcı etkileşiminde başlat (autoplay politikası)
+    this.input.once('pointerdown', () => this.bgm.play());
+  }
+
+  playJump() {
+    this.sfxJump.play();
+  }
+validation:
+  - sfx_plays
+  - music_loops
+  - volume_control_works
+notes: >
+  - Tarayıcı autoplay politikası: ses ilk kullanıcı etkileşimi (tık/ dokunma) sonrası çalar.
+  - Çok kısa SFX için aynı sesi üst üste çalmak için allowMultiple: true.
+  - CORS: ses dosyası farklı domain'den yükleniyorsa başlık gerekebilir.

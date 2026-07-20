@@ -1,0 +1,55 @@
+recipe: phaser_save_load
+engine: phaser
+engine_version: "3.x"
+language: javascript
+description: >
+  localStorage ve Phaser Registry ile oyun kayıt/yorum (save/load) sistemi.
+official_source: https://docs.phaser.io/api-documentation/data/registry
+dependencies:
+  - window.localStorage
+  - this.registry (Phaser.Data.Registry)
+steps:
+  - name: Registry kullan
+    detail: >
+      this.registry.set('score', 100) / this.registry.get('score') ile sahneler arası veri.
+  - name: localStorage yaz
+    detail: >
+      localStorage.setItem('save', JSON.stringify(data)) ile kalıcı kayıt.
+  - name: Oku
+    detail: >
+      JSON.parse(localStorage.getItem('save') || '{}') ile yükle; hata yakala.
+code_snippet: |
+  saveGame() {
+    const data = {
+      score: this.registry.get('score'),
+      level: this.registry.get('level'),
+      ts: Date.now()
+    };
+    try {
+      localStorage.setItem('phaser_save', JSON.stringify(data));
+    } catch (e) {
+      console.error('Kayıt hatası:', e);
+    }
+  }
+
+  loadGame() {
+    try {
+      const raw = localStorage.getItem('phaser_save');
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      this.registry.set('score', data.score || 0);
+      this.registry.set('level', data.level || 1);
+      return data;
+    } catch (e) {
+      console.error('Yükleme hatası:', e);
+      return null;
+    }
+  }
+validation:
+  - save_writes_file
+  - load_reads_file
+  - corrupt_file_handled
+notes: >
+  - localStorage ~5MB sınırı var; büyük veri için IndexedDB düşün.
+  - Web'de gizli mod localStorage'a yazmayı engelleyebilir; try/catch şart.
+  - Hassas veri düz metindir; gerekirse şifrele.

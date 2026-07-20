@@ -1,0 +1,18 @@
+[gd_scene load_steps=5 format=3 uid="uid://b8xplatformermain"]
+
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="1_player"]
+[ext_resource type="RectangleShape2D" id="2_groundshape"]
+
+[sub_resource type="RectangleShape2D" id="RectShape2D_ground"]
+size = Vector2(1024, 40)
+
+[node name="World" type="Node2D"]
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(512, 580)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("RectShape2D_ground")
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(200, 500)

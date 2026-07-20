@@ -1,0 +1,58 @@
+recipe: godot_object_pooling
+engine: godot
+engine_version: "4.x"
+language: gdscript
+description: >
+  Önceden üretilmiş nesne havuzu (object pool) ile mermi/düşman gibi sık
+  oluşan nesnelerin performansını artırma. Aktif/pasif yönetimi içerir.
+official_source: https://docs.godotengine.org/en/stable/tutorials/best_practices/performance.html
+dependencies:
+  - PackedScene (preload)
+  - Node2D (pool container)
+  - (nesne) Node2D / Area2D
+steps:
+  - name: Havuzu doldur
+    detail: >
+      _ready içinde N adet instance oluştur, visible=false / process_mode=DISABLED yap, diziye ekle.
+  - name: Al (acquire)
+    detail: >
+      Havuzdan boş bir nesne al, konumunu ayarla, görünür ve aktif yap.
+  - name: Geri ver (release)
+    detail: >
+      Nesne işi bitince visible=false, konumunu uzaklaştır, havuza iade et.
+code_snippet: |
+  extends Node2D
+
+  const BULLET_SCENE := preload("res://scenes/bullet.tscn")
+  @export var pool_size: int = 50
+
+  var _pool: Array[Node2D] = []
+
+  func _ready() -> void:
+      for i in pool_size:
+          var b := BULLET_SCENE.instantiate()
+          b.visible = false
+          b.process_mode = Node.PROCESS_MODE_DISABLED
+          add_child(b)
+          _pool.append(b)
+
+  func acquire() -> Node2D:
+      for b in _pool:
+          if not b.visible:
+              b.visible = true
+              b.process_mode = Node.PROCESS_MODE_INHERITED
+              return b
+      return null  # havuz dolu
+
+  func release(b: Node2D) -> void:
+      b.visible = false
+      b.process_mode = Node.PROCESS_MODE_DISABLED
+      b.global_position = Vector2(-9999, -9999)
+validation:
+  - pool_prefilled
+  - acquire_returns_inactive
+  - release_returns_to_pool
+notes: >
+  - process_mode=DISABLED ile pasif nesneler _physics_process'ten çıkar (CPU tasarrufu).
+  - Çok büyük havuz bellek tüketir; gerçek ihtiyaç üstüne %20 tampon ekle.
+  - Spawn sistemiyle birlikte kullan: dolu havuzda acquire() null dönerse bekle.

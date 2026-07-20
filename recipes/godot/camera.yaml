@@ -1,0 +1,46 @@
+recipe: godot_camera
+engine: godot
+engine_version: "4.x"
+language: gdscript
+description: >
+  Camera2D ile karakteri takip eden, yumuşatılmış (smoothing) ve sınırlı
+  (limits) kamera kurulumu.
+official_source: https://docs.godotengine.org/en/stable/classes/class_camera2d.html
+dependencies:
+  - Camera2D
+  - (takip edilecek) CharacterBody2D
+steps:
+  - name: Kamera ekleme
+    detail: >
+      Karakterin (veya ayrı bir node'un) altına Camera2D ekle.
+  - name: Takip ve yumuşatma
+    detail: >
+      Camera2D varsayılan olarak parent'ını takip eder. position_smoothing_enabled = true
+      ve position_smoothing_speed ayarla.
+  - name: Sınırlar
+    detail: >
+      limit_left/right/top/bottom ile kameranın harita dışına çıkmasını engelle.
+      limit_smoothed ayarıyla yumuşat.
+code_snippet: |
+  extends Camera2D
+
+  func _ready() -> void:
+      position_smoothing_enabled = true
+      position_smoothing_speed = 8.0
+      # Harita sınırları (örnek değerler)
+      limit_left = 0
+      limit_top = 0
+      limit_right = 2048
+      limit_bottom = 1024
+
+  # Çeyrek ekran ofset (karakteri alttan göster)
+  func _process(delta: float) -> void:
+      offset = Vector2(0, -80)
+validation:
+  - camera_follows_target
+  - camera_smoothing_works
+  - camera_limits_respected
+notes: >
+  - Birden fazla Camera2D varsa sadece birinin current = true olmalı.
+  - Zoom değiştirmek için zoom property'si (Vector2) kullanılır.
+  - Web export'ta çok büyük world uzaklığı z-fighting yapabilir; limit kullan.

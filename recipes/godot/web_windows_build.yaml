@@ -1,0 +1,46 @@
+recipe: godot_web_windows_build
+engine: godot
+engine_version: "4.x"
+language: gdscript
+description: >
+  Godot 4 export preset'leri ile Web (HTML5/WebGL) ve Windows build alma,
+  performans ipuçları ve bilinen sınırlamalar.
+official_source: https://docs.godotengine.org/en/stable/tutorials/export/exporting_projects.html
+dependencies:
+  - Export Presets (Project > Export)
+  - Export templates (Editor > Manage Export Templates)
+steps:
+  - name: Export template yükle
+    detail: >
+      Editor > Manage Export Templates ile bir kez template indir (build için zorunlu).
+  - name: Web preset
+    detail: >
+      Export > Add > Web. "Export Path" = build/index.html. Variant: "Release".
+      "HTML / Custom HTML shell" opsiyonel.
+  - name: Windows preset
+    detail: >
+      Export > Add > Windows. "Export Path" = build/game.exe. Embed PCK seçeneği var.
+  - name: Build al
+    detail: >
+      "Export Project" butonuyla veya CLI: godot --headless --export-release "Web" build/index.html
+code_snippet: |
+  # CLI ile headless export (CI/CD için)
+  # Önce preset'leri project.godot içinde tanımla
+  godot --headless --path . --export-release "Web" "build/web/index.html"
+  godot --headless --path . --export-release "Windows Desktop" "build/win/game.exe"
+
+  # project.godot içinde preset örneği (özet):
+  # [preset.0]
+  # name="Web"
+  # platform="Web"
+  # [preset.0.options]
+  # export_path="build/web/index.html"
+validation:
+  - web_build_runs_in_browser
+  - windows_build_runs
+  - export_preset_configured
+notes: >
+  - Web export'ta dosya boyutu büyükse; "Export PCK/ZIP" yerine tek dosya dene.
+  - WebGL2 gerektirir; eski tarayıcılar desteklemez. Threading sınırlı olabilir.
+  - Windows'ta antivirüs yanlış pozitif yapabilir; imzalama (code signing) önerilir.
+  - Performans: _process yerine gerektiğinde _physics_process; gereksiz node'u queue_free et.

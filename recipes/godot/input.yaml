@@ -1,0 +1,46 @@
+recipe: godot_input
+engine: godot
+engine_version: "4.x"
+language: gdscript
+description: >
+  InputMap ile yeniden atanabilir aksiyonlar, klavye + gamepad girişi ve
+  programatik girdi okuma.
+official_source: https://docs.godotengine.org/en/stable/classes/class_input.html
+dependencies:
+  - InputMap (Project Settings > Input Map)
+  - Input singleton
+steps:
+  - name: Aksiyon tanımla
+    detail: >
+      Project Settings > Input Map sekmesinde "move_left", "move_right", "jump"
+      gibi aksiyonlar oluştur, tuş ve gamepad düğmelerini eşle.
+  - name: Girdileri oku
+    detail: >
+      Input.is_action_pressed() (sürekli), Input.is_action_just_pressed() (tek sefer),
+      Input.get_axis() (iki yön) kullan.
+  - name: Gamepad desteği
+    detail: >
+      Aynı aksiyona hem tuş hem joypad düğmesi eşlenebilir; ekstra kod gerekmez.
+code_snippet: |
+  # move_left / move_right / jump aksiyonları Input Map'te tanımlı olsun
+  func _physics_process(delta: float) -> void:
+      var dir := Input.get_axis("move_left", "move_right")
+      velocity.x = dir * speed
+
+      if Input.is_action_just_pressed("jump") and is_on_floor():
+          velocity.y = jump_velocity
+
+      move_and_slide()
+
+  # Gamepad bağlantı durumu
+  func _input(event: InputEvent) -> void:
+      if event is InputEventJoypadButton:
+          print("Joypad düğmesi: ", event.button_index)
+validation:
+  - keyboard_input_works
+  - gamepad_input_works
+  - action_remapping_supported
+notes: >
+  - Aksiyon adlarını kodda string olarak kullan; yanlış yazarsan sessizce false döner.
+  - Mobil için aynı aksiyonlara InputEventScreenTouch eşleyebilirsin.
+  - InputMap.load_from_project_settings() ile runtime'da yönetilebilir.

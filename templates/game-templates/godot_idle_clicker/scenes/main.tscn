@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://b8idlemain"]
+
+[ext_resource type="Script" path="res://scripts/clicker.gd" id="1_clk"]
+
+[node name="Clicker" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_clk")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+offset_left = 200.0
+offset_top = 150.0
+offset_right = 600.0
+offset_bottom = 450.0
+
+[node name="MoneyLabel" type="Label" parent="VBox"]
+layout_mode = 2
+text = "Para: 0"
+
+[node name="ClickButton" type="Button" parent="VBox"]
+layout_mode = 2
+text = "TIKLA"
+
+[node name="IncomeTimer" type="Timer" parent="."]
+wait_time = 1.0
+one_shot = false

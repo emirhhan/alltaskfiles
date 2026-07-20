@@ -1,0 +1,54 @@
+recipe: godot_character_movement
+engine: godot
+engine_version: "4.x"
+language: gdscript
+description: >
+  CharacterBody2D tabanlı 2D karakter hareketi. Yerçekimi, zıplama,
+  çapraz hız normalizasyonu ve duvar/kenar tespiti içerir.
+official_source: https://docs.godotengine.org/en/stable/classes/class_characterbody2d.html
+dependencies:
+  - CharacterBody2D
+  - CollisionShape2D
+  - (opsiyonel) Sprite2D / AnimatedSprite2D
+steps:
+  - name: Sahne kurulumu
+    detail: >
+      Kök node CharacterBody2D olsun. Altına CollisionShape2D ve Sprite2D ekle.
+      Project Settings > Physics > 2D > Default Gravity değerini ayarla (örn. 980).
+  - name: Hareket vektörü
+    detail: >
+      _physics_process içinde input'tan yön al, velocity'yi güncelle, move_and_slide()
+      çağır. Çapraz hareketi normalize ederek aşırı hızı engelle.
+  - name: Zıplama
+    detail: >
+      is_on_floor() kontrolüyle sadece yerdeyken zıplamaya izin ver.
+code_snippet: |
+  extends CharacterBody2D
+
+  @export var speed: float = 300.0
+  @export var jump_velocity: float = -500.0
+
+  func _physics_process(delta: float) -> void:
+      var direction := Input.get_axis("ui_left", "ui_right")
+      velocity.x = direction * speed
+
+      if not is_on_floor():
+          velocity.y += get_gravity().y * delta
+
+      if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+          velocity.y = jump_velocity
+
+      # Çapraz normalizasyon (diagonal speed normalize)
+      if velocity.length() > speed:
+          velocity = velocity.normalized() * speed
+
+      move_and_slide()
+validation:
+  - movement_works
+  - diagonal_speed_normalized
+  - collision_works
+  - mobile_input_supported
+notes: >
+  - get_gravity() Godot 4'te Project Settings'ten otomatik alır; sabit yazma.
+  - Input.get_axis() yerine Input.get_vector() kullanarak 8 yönlü girdi alabilirsin.
+  - Mobil için ui_left/ui_right aksiyonlarına ekran dokunma eşle (bkz. mobile_control).

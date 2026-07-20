@@ -1,0 +1,45 @@
+recipe: phaser_collision
+engine: phaser
+engine_version: "3.x"
+language: javascript
+description: >
+  Arcade physics collider/overlap ile çarpışma ve temas (overlap) tespiti,
+  grup (group) ve katman yönetimi.
+official_source: https://docs.phaser.io/api-documentation/class/arcade-physics-world
+dependencies:
+  - this.physics.add.collider
+  - this.physics.add.overlap
+  - this.physics.add.group
+steps:
+  - name: Çarpışma
+    detail: >
+      this.physics.add.collider(player, platforms) ile katı çarpışma.
+  - name: Overlap (temas)
+    detail: >
+      this.physics.add.overlap(player, coins, onCollect) ile hasarsız temas.
+  - name: Grup
+    detail: >
+      this.enemies = this.physics.add.group(); collider(player, enemies, hit).
+code_snippet: |
+  create() {
+    this.platforms = this.physics.add.staticGroup();
+    this.physics.add.collider(this.player, this.platforms);
+
+    this.coins = this.physics.add.group();
+    this.physics.add.overlap(this.player, this.coins, (p, c) => {
+      c.disableBody(true, true); // coin'i topla
+    });
+
+    this.enemies = this.physics.add.group();
+    this.physics.add.collider(this.player, this.enemies, (p, e) => {
+      // hasar sistemine yönlendir
+    });
+  }
+validation:
+  - collision_works
+  - overlap_detection_works
+  - layer_mask_configured
+notes: >
+  - collider fiziksel itme yapar; overlap sadece sinyal (hasar/toplama için).
+  - Group içi çarpışma için group vs group collider kullan.
+  - Çok sayıda nesne için staticGroup (hareketsiz) daha performanslı.

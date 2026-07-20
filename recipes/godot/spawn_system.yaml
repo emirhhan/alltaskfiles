@@ -1,0 +1,55 @@
+recipe: godot_spawn_system
+engine: godot
+engine_version: "4.x"
+language: gdscript
+description: >
+  Timer ve rastgele konum ile düşman/nesne üreten (spawn) sistem. Dalga
+  (wave) destekli, spawn noktaları üzerinden çalışır.
+official_source: https://docs.godotengine.org/en/stable/classes/class_timer.html
+dependencies:
+  - Timer
+  - PackedScene (preload)
+  - Node2D (spawn container)
+  - (önerilen) Marker2D (spawn noktaları)
+steps:
+  - name: Sahne referansı
+    detail: >
+      preload("res://scenes/enemy.tscn") ile üretilecek sahneyi hazırla.
+  - name: Timer kur
+    detail: >
+      Timer'ı wait_time ve timeout sinyaliyle kur; autostart aç.
+  - name: Üret
+    detail: >
+      timeout'ta rastgele spawn noktası seç, instance() oluştur, konum ata, ekle.
+code_snippet: |
+  extends Node2D
+
+  const ENEMY_SCENE := preload("res://scenes/enemy.tscn")
+  @export var spawn_points: Array[Marker2D] = []
+  @export var spawn_interval: float = 2.0
+  @export var max_enemies: int = 20
+
+  var _enemy_count := 0
+
+  func _ready() -> void:
+      $SpawnTimer.wait_time = spawn_interval
+      $SpawnTimer.timeout.connect(_on_spawn_timeout)
+      $SpawnTimer.start()
+
+  func _on_spawn_timeout() -> void:
+      if _enemy_count >= max_enemies or spawn_points.is_empty():
+          return
+      var point := spawn_points[randi() % spawn_points.size()]
+      var enemy := ENEMY_SCENE.instantiate()
+      enemy.global_position = point.global_position
+      add_child(enemy)
+      _enemy_count += 1
+      enemy.tree_exited.connect(func(): _enemy_count -= 1)
+validation:
+  - spawn_creates_instance
+  - spawn_respects_max_count
+  - spawn_random_position
+notes: >
+  - Performans için spawn edilenleri object_pooling ile yönet (bkz. object_pooling).
+  - Dalga sistemi için wave verisini Dictionary olarak tut, Timer'ı yeniden başlat.
+  - Rand için randi()/randf() kullan; kriptografik değil ama oyun için yeterli.

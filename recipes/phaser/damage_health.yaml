@@ -1,0 +1,53 @@
+recipe: phaser_damage_health
+engine: phaser
+engine_version: "3.x"
+language: javascript
+description: >
+  Sağlık (HP) sistemi, overlap ile hasar alma, invincibility frame (kısa
+  dokunulmazlık) ve ölüm yönetimi.
+official_source: https://docs.phaser.io/api-documentation/class/arcade-physics-body
+dependencies:
+  - this.physics.add.overlap
+  - sprite.takeDamage (özel metot)
+  - this.time.delayedCall (i-frames)
+steps:
+  - name: HP değişkeni
+    detail: >
+      this.health = 100; takeDamage(n) içinde azalt, 0 ise die().
+  - name: Hasar al
+    detail: >
+      overlap(player, enemies, (p, e) => p.takeDamage(10)) ile temas hasarı.
+  - name: İ-frame
+    detail: >
+      Hasar alınınca this.invincible = true; delayedCall(500, () => false).
+code_snippet: |
+  // Player sınıfı (extends Phaser.Physics.Arcade.Sprite)
+  takeDamage(amount) {
+    if (this.invincible) return;
+    this.health -= amount;
+    this.invincible = true;
+    this.setAlpha(0.4);
+    this.scene.time.delayedCall(500, () => {
+      this.invincible = false;
+      this.setAlpha(1);
+    });
+    if (this.health <= 0) {
+      this.die();
+    }
+  }
+
+  die() {
+    this.disableBody(true, true);
+    // veya respawn mantığı
+  }
+
+  // Sahnede bağlama
+  // this.physics.add.overlap(this.player, this.enemies, (p, e) => p.takeDamage(10));
+validation:
+  - damage_reduces_health
+  - invincibility_frames_work
+  - death_triggers
+notes: >
+  - setAlpha ile hasar geri bildirimi; shader istersen pipeline kullan.
+  - Çoklu hasar kaynağı için overlap callback'te kaynağı ayırt et.
+  - İ-frame süresini oyun hızına göre ayarla (500ms önerilir).

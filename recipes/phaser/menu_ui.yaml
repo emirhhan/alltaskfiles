@@ -1,0 +1,42 @@
+recipe: phaser_menu_ui
+engine: phaser
+engine_version: "3.x"
+language: javascript
+description: >
+  Phaser içi UI (Text, Rectangle, Container) ve sahne (Scene) yönetimi ile
+  menü/UI kurulumu. DOM overlay opsiyonel.
+official_source: https://docs.phaser.io/api-documentation/class/game-objects-text
+dependencies:
+  - this.add.text
+  - this.add.rectangle
+  - this.scene.start / this.scene.switch
+steps:
+  - name: UI nesnesi
+    detail: >
+      this.add.rectangle(...) + this.add.text(...) ile buton görünümü; setInteractive().
+  - name: Tıklama
+    detail: >
+      rect.on('pointerdown', () => this.scene.start('Game')) ile sahne geçişi.
+  - name: Sahne yönetimi
+    detail: >
+      config.scene = [Boot, Menu, Game]; this.scene.start('Game') ile geç.
+code_snippet: |
+  create() {
+    const cx = this.scale.width / 2;
+    const btn = this.add.rectangle(cx, 240, 200, 60, 0x2d6cdf)
+      .setInteractive({ useHandCursor: true });
+    const label = this.add.text(cx, 240, 'START', { fontSize: '24px', color: '#fff' })
+      .setOrigin(0.5);
+
+    btn.on('pointerover', () => btn.setFillStyle(0x4a8fe0));
+    btn.on('pointerout', () => btn.setFillStyle(0x2d6cdf));
+    btn.on('pointerdown', () => this.scene.start('Game'));
+  }
+validation:
+  - ui_renders
+  - button_press_works
+  - scene_transition_works
+notes: >
+  - Karmaşık UI için DOM (HTML div) overlay daha kolay; canvas üstüne konumla.
+  - Text fontları web'de CORS nedeniyle yüklemeyebilir; sistem fontu kullan.
+  - Mobil dokunma pointerdown ile otomatik çalışır.

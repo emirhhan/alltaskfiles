@@ -1,0 +1,47 @@
+recipe: godot_collision
+engine: godot
+engine_version: "4.x"
+language: gdscript
+description: >
+  CollisionShape2D, Area2D ve PhysicsBody2D (CharacterBody2D/RigidBody2D/StaticBody2D)
+  ile çarpışma katmanları (layer/mask) ve overlap tespiti.
+official_source: https://docs.godotengine.org/en/stable/classes/class_collisionshape2d.html
+dependencies:
+  - CollisionShape2D
+  - Area2D
+  - PhysicsBody2D (CharacterBody2D / StaticBody2D)
+steps:
+  - name: Fizik gövdesi kur
+    detail: >
+      Karakter için CharacterBody2D + CollisionShape2D; zemin için StaticBody2D + CollisionShape2D.
+  - name: Katman ayarla
+    detail: >
+      Inspector > Collision > Layer (ben kimim) ve Mask (kime çarpıyorum) ayarla.
+      Örn. player layer=1, enemy layer=2, ground layer=3.
+  - name: Overlap (temas) tespiti
+    detail: >
+      Alan tespiti için Area2D kullan; body_entered / area_entered sinyallerini bağla.
+code_snippet: |
+  # Player (CharacterBody2D) altında Area2D "Hurtbox" olsun
+  extends Area2D
+
+  func _ready() -> void:
+      body_entered.connect(_on_body_entered)
+
+  func _on_body_entered(body: Node) -> void:
+      if body.is_in_group("enemy"):
+          print("Düşmanla temas!")
+          # hasar sistemine yönlendir
+
+  # Çarpışma katmanı örneği (kod ile)
+  func set_layers() -> void:
+      collision_layer = 1   # player
+      collision_mask = 2 | 3  # enemy + ground ile çarpış
+validation:
+  - collision_works
+  - overlap_detection_works
+  - layer_mask_configured
+notes: >
+  - move_and_slide() zaten fiziksel çarpışmayı çözer; overlap için ayrı Area2D gerekir.
+  - Area2D "monitoring" kapalıysa sinyal tetiklenmez.
+  - Çok sayıda gövde için broadphase ayarlarını kontrol et (performans).

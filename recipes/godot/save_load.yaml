@@ -1,0 +1,51 @@
+recipe: godot_save_load
+engine: godot
+engine_version: "4.x"
+language: gdscript
+description: >
+  FileAccess ve JSON ile kullanıcı veri dizinine (user://) güvenli kayıt/yorum
+  (save/load) sistemi.
+official_source: https://docs.godotengine.org/en/stable/classes/class_fileaccess.html
+dependencies:
+  - FileAccess
+  - JSON
+  - (opsiyonel) ResourceSaver / ConfigFile
+steps:
+  - name: Kayıt verisi hazırla
+    detail: >
+      Kaydedilecek veriyi Dictionary olarak topla (skor, seviye, konum vb.).
+  - name: Yaz
+    detail: >
+      FileAccess.open(path, FileAccess.WRITE) ile aç, JSON.stringify() ile string'e çevirip store_string() ile yaz.
+  - name: Oku
+    detail: >
+      FileAccess.exists() ile varlık kontrolü, sonra READ modunda açıp get_as_text() + JSON.parse_string().
+code_snippet: |
+  const SAVE_PATH := "user://savegame.json"
+
+  func save_game(data: Dictionary) -> void:
+      var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+      if file == null:
+          push_error("Kayıt açılamadı: " + FileAccess.get_open_error())
+          return
+      file.store_string(JSON.stringify(data))
+      file.close()
+
+  func load_game() -> Dictionary:
+      if not FileAccess.exists(SAVE_PATH):
+          return {}
+      var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+      var text := file.get_as_text()
+      file.close()
+      var parsed := JSON.parse_string(text)
+      if parsed == null or typeof(parsed) != TYPE_DICTIONARY:
+          return {}
+      return parsed
+validation:
+  - save_writes_file
+  - load_reads_file
+  - corrupt_file_handled
+notes: >
+  - user:// yolu platforma göre değişir (Windows: %APPDATA%, Web: IndexedDB emülasyonu).
+  - Web export'ta dosya yazımı IndexedDB'ye yönlenir; senkron çalışır.
+  - Hassas veri saklama (kayıt dosyası düz metindir, şifreleme gerekirse Crypto kulla).

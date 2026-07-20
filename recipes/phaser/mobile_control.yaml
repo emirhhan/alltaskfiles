@@ -1,0 +1,56 @@
+recipe: phaser_mobile_control
+engine: phaser
+engine_version: "3.x"
+language: javascript
+description: >
+  Dokunmatik (pointer) girişi, sanal joystick ve Scale Manager ile mobil
+  kontrol desteği.
+official_source: https://docs.phaser.io/api-documentation/class/scale-scalemanager
+dependencies:
+  - this.input.addPointer (çok dokunma)
+  - this.input.on('pointerdown'/'pointermove')
+  - Scale Manager (config.scale)
+steps:
+  - name: Scale ayarla
+    detail: >
+      config.scale = { mode: Phaser.Scale.FIT, autoCenter: CENTER_BOTH } ile responsive.
+  - name: Çok dokunma
+    detail: >
+      this.input.addPointer(2) ile 3 dokunmaya kadar destek; pointer.id ile ayırt et.
+  - name: Sanal joystick
+    detail: >
+      Sol alt köşede pointerdown -> joystick origin; pointermove -> vektör.
+code_snippet: |
+  // config
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    width: 800, height: 600
+  },
+  // Scene
+  create() {
+    this.input.addPointer(2);
+    this.joyActive = false;
+    this.joyVec = new Phaser.Math.Vector2(0, 0);
+    this.input.on('pointerdown', (p) => {
+      if (p.x < 200 && p.y > this.scale.height - 200) {
+        this.joyActive = true; this.joyOrigin = { x: p.x, y: p.y };
+      }
+    });
+    this.input.on('pointermove', (p) => {
+      if (this.joyActive) {
+        const dx = p.x - this.joyOrigin.x;
+        const dy = p.y - this.joyOrigin.y;
+        this.joyVec.set(dx, dy).limit(60).scale(1/60);
+      }
+    });
+    this.input.on('pointerup', () => { this.joyActive = false; this.joyVec.set(0,0); });
+  }
+validation:
+  - touch_detected
+  - virtual_joystick_works
+  - mobile_input_supported
+notes: >
+  - Scale.FIT ile farklı ekran oranlarında siyah kenar olur; RESIZE modu daha esnek.
+  - iOS Safari'de ses ve tam ekran için kullanıcı etkileşimi şart.
+  - Dokunma ve fare aynı pointer API'siyle çalışır; kod birleşik.

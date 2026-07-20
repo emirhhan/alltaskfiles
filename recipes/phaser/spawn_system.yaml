@@ -1,0 +1,48 @@
+recipe: phaser_spawn_system
+engine: phaser
+engine_version: "3.x"
+language: javascript
+description: >
+  Timer (time.addEvent) ve rastgele konum ile düşman/nesne üreten (spawn)
+  sistem. Dalga (wave) destekli.
+official_source: https://docs.phaser.io/api-documentation/class/time-timer
+dependencies:
+  - this.time.addEvent
+  - this.physics.add.group
+  - Phaser.Math.Between
+steps:
+  - name: Grup kur
+    detail: >
+      this.enemies = this.physics.add.group(); üretilenler buraya eklenir.
+  - name: Timer
+    detail: >
+      this.time.addEvent({ delay: 2000, loop: true, callback: spawn }) ile periyodik üret.
+  - name: Üret
+    detail: >
+      group.get(x, y, 'enemy') veya group.create(); rastgele konum ata.
+code_snippet: |
+  create() {
+    this.enemies = this.physics.add.group();
+    this.spawnTimer = this.time.addEvent({
+      delay: 2000,
+      loop: true,
+      callback: this.spawnEnemy,
+      callbackScope: this
+    });
+  }
+
+  spawnEnemy() {
+    if (this.enemies.countActive(true) >= 20) return;
+    const x = Phaser.Math.Between(50, this.scale.width - 50);
+    const y = -20;
+    const e = this.enemies.create(x, y, 'enemy');
+    e.setVelocityY(80);
+  }
+validation:
+  - spawn_creates_instance
+  - spawn_respects_max_count
+  - spawn_random_position
+notes: >
+  - Performans için group.get() ile object pooling kullan (bkz. object_pooling).
+  - Dalga için wave verisini tut, timer'ı yeniden başlat.
+  - Math.Between yerine Phaser.Math.RND kullanarak seed'lenebilir.

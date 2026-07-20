@@ -1,0 +1,48 @@
+recipe: phaser_input
+engine: phaser
+engine_version: "3.x"
+language: javascript
+description: >
+  Klavye, pointer (fare/dokunma) ve gamepad girdisi; yeniden atanabilir
+  aksiyon mantığı.
+official_source: https://docs.phaser.io/api-documentation/class/input-keyboard-keyboardplugin
+dependencies:
+  - this.input.keyboard.createCursorKeys
+  - this.input.keyboard.addKey
+  - this.input.on('pointerdown')
+  - this.input.gamepad
+steps:
+  - name: Klavye
+    detail: >
+      createCursorKeys() (ok tuşları) veya addKey('W') ile tek tuş; isDown kontrolü.
+  - name: Pointer
+    detail: >
+      this.input.on('pointerdown'/'pointermove') ile fare/dokunma konumu (pointer.x/y).
+  - name: Gamepad
+    detail: >
+      config.input.gamepad = true; this.input.gamepad.getPad(0).leftStick.
+code_snippet: |
+  create() {
+    this.cursors = this.input.keyboard.createCursorKeys();
+    this.keyA = this.input.keyboard.addKey('A');
+    this.input.on('pointerdown', (p) => {
+      console.log('Dokunma:', p.x, p.y);
+    });
+    // Gamepad (config'de input: { gamepad: true } gerekir)
+    if (this.input.gamepad) {
+      this.pad = this.input.gamepad.getPad(0);
+    }
+  }
+
+  update() {
+    if (this.keyA.isDown) { /* sol hareket */ }
+    if (this.pad && this.pad.left) { /* gamepad sol */ }
+  }
+validation:
+  - keyboard_input_works
+  - gamepad_input_works
+  - action_remapping_supported
+notes: >
+  - addKey string yerine Phaser.Input.Keyboard.KeyCodes.W kullan (daha güvenli).
+  - Pointer hem fare hem dokunma; mobil için ayrı kod gerekmez.
+  - Gamepad desteği tarayıcıya bağlı; feature-detect yap.

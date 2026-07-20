@@ -1,0 +1,74 @@
+recipe: godot_enemy_ai
+engine: godot
+engine_version: "4.x"
+language: gdscript
+description: >
+  Basit durum makinesi (state machine) ile düşman AI: devriye (patrol),
+  kovala (chase), algılama (detection) ve saldırı.
+official_source: https://docs.godotengine.org/en/stable/tutorials/scripting/state_design_pattern.html
+dependencies:
+  - CharacterBody2D / Node2D
+  - NavigationAgent2D (opsiyonel pathfinding)
+  - Area2D (detection)
+steps:
+  - name: Durumları tanımla
+    detail: >
+      enum State { IDLE, PATROL, CHASE, ATTACK } kullan; _physics_process'te duruma göre dallan.
+  - name: Algılama
+    detail: >
+      Düşman önündeki Area2D (DetectionZone) ile oyuncuya yaklaşımı tespit et.
+  - name: Davranış
+    detail: >
+      PATROL: waypoint'ler arasında git. CHASE: oyuncuya doğru velocity. ATTACK: menzildeyse hasar ver.
+code_snippet: |
+  extends CharacterBody2D
+
+  enum State { PATROL, CHASE, ATTACK }
+  var current_state := State.PATROL
+  var player: Node2D = null
+  @export var patrol_points: Array[Vector2] = []
+  var patrol_index := 0
+
+  func _physics_process(delta: float) -> void:
+      match current_state:
+          State.PATROL:
+              _patrol(delta)
+          State.CHASE:
+              _chase(delta)
+          State.ATTACK:
+              _attack(delta)
+
+  func _patrol(delta: float) -> void:
+      if patrol_points.is_empty():
+          return
+      var target := patrol_points[patrol_index]
+      velocity = (target - global_position).normalized() * 80.0
+      if global_position.distance_to(target) < 8.0:
+          patrol_index = (patrol_index + 1) % patrol_points.size()
+      move_and_slide()
+
+  func _chase(delta: float) -> void:
+      if player == null:
+          current_state = State.PATROL
+          return
+      velocity = (player.global_position - global_position).normalized() * 140.0
+      move_and_slide()
+
+  func _attack(delta: float) -> void:
+      if player != null and global_position.distance_to(player.global_position) < 24.0:
+          # hasar sistemine sinyal gönder
+          player.take_damage(10)
+      current_state = State.CHASE
+
+  func _on_detection_body_entered(body: Node) -> void:
+      if body.is_in_group("player"):
+          player = body
+          current_state = State.CHASE
+validation:
+  - patrol_works
+  - chase_triggers_on_detection
+  - attack_in_range
+notes: >
+  - Karmaşık yol bulma için NavigationAgent2D + NavigationRegion2D kullan.
+  - Durum geçişlerini sinyallerle değil, merkezi bir _transition() fonksiyonuyla yönet.
+  - Çok sayıda düşman için her birine ayrı AI yerine object pooling + shared logic düşün.

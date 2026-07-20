@@ -1,0 +1,52 @@
+recipe: godot_audio
+engine: godot
+engine_version: "4.x"
+language: gdscript
+description: >
+  AudioStreamPlayer (global), AudioStreamPlayer2D (konumlu) ve AudioStreamPlayer3D
+  ile ses yönetimi; bus yapılandırması, müzik ve SFX ayrımı.
+official_source: https://docs.godotengine.org/en/stable/classes/class_audiostreamplayer.html
+dependencies:
+  - AudioStreamPlayer
+  - AudioStreamPlayer2D
+  - AudioBus (Editor > Audio)
+steps:
+  - name: Bus kur
+    detail: >
+      Audio bus panelinde "SFX" ve "Music" bus'ları oluştur; Master altına bağla.
+  - name: SFX çal
+    detail: >
+      AudioStreamPlayer2D (sahnede konumlu) veya AudioStreamPlayer ile stream ve play().
+  - name: Müzik döngüsü
+    detail: >
+      Music bus'ına bağlı player'da stream.loop = true yap.
+code_snippet: |
+  extends Node
+
+  @onready var sfx_player: AudioStreamPlayer2D = $SFXPlayer
+  @onready var music_player: AudioStreamPlayer = $MusicPlayer
+
+  func play_sfx(stream: AudioStream) -> void:
+      sfx_player.stream = stream
+      sfx_player.play()
+
+  func play_music(stream: AudioStream) -> void:
+      music_player.stream = stream
+      music_player.stream.loop = true
+      music_player.play()
+
+  func set_master_volume(db: float) -> void:
+      AudioServer.set_bus_volume_db(0, db)  # Master bus
+
+  # Web export'ta ilk kullanıcı etkileşimi gerekir
+  func _ready() -> void:
+      AudioServer.set_bus_mute(0, false)
+validation:
+  - sfx_plays
+  - music_loops
+  - volume_control_works
+notes: >
+  - Web export'ta tarayıcı autoplay politikası nedeniyle ses ilk tıklamaya kadar sessiz kalabilir;
+    bir "Start" butonu sonrası play() çağır.
+  - Çok sayıda kısa SFX için AudioStreamPlayer yerine pool düşün.
+  - Bus efektleri (reverb/compressor) editörden eklenir, kod gerekmez.

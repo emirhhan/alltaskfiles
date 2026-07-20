@@ -1,0 +1,58 @@
+recipe: phaser_enemy_ai
+engine: phaser
+engine_version: "3.x"
+language: javascript
+description: >
+  Basit durum makinesi (state machine) ile düşman AI: devriye, kovala,
+  algılama (mesafe) ve saldırı.
+official_source: https://docs.phaser.io/api-documentation/class/game-objects-sprite
+dependencies:
+  - Phaser.GameObjects.Sprite / Arcade Sprite
+  - this.physics.moveToObject
+  - Phaser.Math.Distance.Between
+steps:
+  - name: Durumlar
+    detail: >
+      this.state = 'PATROL' | 'CHASE' | 'ATTACK'; update'te duruma göre dallan.
+  - name: Algılama
+    detail: >
+      Phaser.Math.Distance.Between(enemy, player) < detectRange ise CHASE.
+  - name: Davranış
+    detail: >
+      PATROL: waypoint'ler arası; CHASE: physics.moveToObject(player); ATTACK: menzilde hasar.
+code_snippet: |
+  update(time, delta) {
+    const dist = Phaser.Math.Distance.Between(this.x, this.y, this.player.x, this.player.y);
+    switch (this.state) {
+      case 'PATROL':
+        this._patrol(delta);
+        if (dist < 200) this.state = 'CHASE';
+        break;
+      case 'CHASE':
+        this.scene.physics.moveToObject(this, this.player, 120);
+        if (dist < 30) this.state = 'ATTACK';
+        if (dist > 400) this.state = 'PATROL';
+        break;
+      case 'ATTACK':
+        this.player.takeDamage(10);
+        this.state = 'CHASE';
+        break;
+    }
+  }
+
+  _patrol(delta) {
+    if (!this.patrolPoints || !this.patrolPoints.length) return;
+    const t = this.patrolPoints[this.patrolIndex];
+    this.scene.physics.moveTo(this, t.x, t.y, 60);
+    if (Phaser.Math.Distance.Between(this.x, this.y, t.x, t.y) < 8) {
+      this.patrolIndex = (this.patrolIndex + 1) % this.patrolPoints.length;
+    }
+  }
+validation:
+  - patrol_works
+  - chase_triggers_on_detection
+  - attack_in_range
+notes: >
+  - moveToObject her frame hedefe doğru hız verir; durması için setVelocity(0) gerekir.
+  - Karmaşık yol bulma için grid/A* ekle.
+  - Çok düşman için ortak AI sınıfı (extends Phaser.GameObjects.Sprite) yaz.

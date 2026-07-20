@@ -1,0 +1,53 @@
+recipe: phaser_web_windows_build
+engine: phaser
+engine_version: "3.x"
+language: javascript
+description: >
+  Phaser 3 web build (Vite/Webpack) ve masaüstü (Electron/Capacitor) paketleme,
+  performans ipuçları ve bilinen sınırlamalar.
+official_source: https://docs.phaser.io/learn/tutorials/getting-started-phaser3
+dependencies:
+  - Vite / Webpack (bundler)
+  - index.html (canvas mount)
+  - (masaüstü) Electron / Capacitor
+steps:
+  - name: index.html
+    detail: >
+      <div id="game"></div> + <script src="phaser.min.js"> + main.js. parent: 'game'.
+  - name: Vite build
+    detail: >
+      npm create vite, phaser ekle, npm run build -> dist/ (statik site).
+  - name: Masaüstü
+    detail: >
+      Electron ile dist/'yi sar; veya Capacitor ile mobil/desktop.
+code_snippet: |
+  // vite.config.js
+  import { defineConfig } from 'vite';
+  export default defineConfig({
+    base: './',           // relatif yol (file:// veya alt klasör için)
+    build: { outDir: 'dist' }
+  });
+
+  // index.html
+  <div id="game"></div>
+  <script type="module" src="/src/main.js"></script>
+
+  // src/main.js
+  import Phaser from 'phaser';
+  const config = {
+    type: Phaser.AUTO,
+    parent: 'game',
+    scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH, width: 800, height: 600 },
+    physics: { default: 'arcade', arcade: { gravity: { y: 0 } } },
+    scene: [BootScene, GameScene]
+  };
+  new Phaser.Game(config);
+validation:
+  - web_build_runs_in_browser
+  - windows_build_runs
+  - export_preset_configured
+notes: >
+  - base: './' kullanmazsan build alt klasörde bozuk path verir.
+  - WebGL gerektirir; eski tarayıcıda CANVAS fallback (Phaser.AUTO) devreye girer.
+  - Performans: gereksiz update mantığını kaldır, object pooling kullan, texture atlas yap.
+  - Windows exe için Electron builder kullan; dosya boyutu büyük olur.

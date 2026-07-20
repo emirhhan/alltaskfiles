@@ -1,0 +1,60 @@
+recipe: godot_damage_health
+engine: godot
+engine_version: "4.x"
+language: gdscript
+description: >
+  Sağlık (HP) sistemi, Area2D overlap ile hasar alma, invincibility frame
+  (kısa dokunulmazlık) ve ölüm yönetimi.
+official_source: https://docs.godotengine.org/en/stable/classes/class_area2d.html
+dependencies:
+  - Area2D (hurtbox)
+  - CharacterBody2D / Node2D
+  - Timer (i-frames)
+steps:
+  - name: HP değişkeni
+    detail: >
+      @export var max_health / health tanımla; health <= 0 ise _die() çağır.
+  - name: Hasar al
+    detail: >
+      Hurtbox area_entered sinyalinde take_damage(miktar) çağır; invincibility kontrolü yap.
+  - name: İ-frame
+    detail: >
+      Hasar alınınca bir Timer başlat; süresince yeni hasarı reddet.
+code_snippet: |
+  extends CharacterBody2D
+
+  @export var max_health: int = 100
+  var health: int = max_health
+  var _invincible := false
+  @onready var hurtbox: Area2D = $Hurtbox
+  @onready var iframes: Timer = $IFrames
+
+  func _ready() -> void:
+      hurtbox.area_entered.connect(_on_hurtbox_area_entered)
+
+  func _on_hurtbox_area_entered(area: Area2D) -> void:
+      if area.is_in_group("enemy_hitbox") and not _invincible:
+          take_damage(10)
+
+  func take_damage(amount: int) -> void:
+      health -= amount
+      _invincible = true
+      iframes.start()
+      modulate = Color(1, 0.3, 0.3, 0.6)  # görsel geri bildirim
+      if health <= 0:
+          _die()
+
+  func _on_iframes_timeout() -> void:
+      _invincible = false
+      modulate = Color(1, 1, 1, 1)
+
+  func _die() -> void:
+      queue_free()  # veya respawn mantığı
+validation:
+  - damage_reduces_health
+  - invincibility_frames_work
+  - death_triggers
+notes: >
+  - modulate ile hasar geri bildirimi ver; shader kullanacaksan CanvasItemMaterial.
+  - Çoklu hasar kaynağı için area yerine _on_hurtbox_body_entered da kullanılabilir.
+  - İ-frame süresini oyun hızına göre ayarla (0.5-1.0s önerilir).

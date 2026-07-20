@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://b8xtopdownenemy"]
+
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="1_e"]
+
+[sub_resource type="RectangleShape2D" id="RectShape2D_e"]
+size = Vector2(28, 28)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_det"]
+radius = 120.0
+
+[node name="Enemy" type="CharacterBody2D"]
+script = ExtResource("1_e")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectShape2D_e")
+
+[node name="Detection" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Detection"]
+shape = SubResource("CircleShape2D_det")
+
+[node name="Hitbox" type="Area2D" parent="."]
+add_to_group = "enemy_hitbox"
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("RectShape2D_e")

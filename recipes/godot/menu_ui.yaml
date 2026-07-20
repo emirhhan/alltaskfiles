@@ -1,0 +1,47 @@
+recipe: godot_menu_ui
+engine: godot
+engine_version: "4.x"
+language: gdscript
+description: >
+  Control node'ları (Button, Label, Panel) ile CanvasLayer üzerinde menü/UI
+  kurulumu, sinyal bağlama ve sahne (scene) geçişi.
+official_source: https://docs.godotengine.org/en/stable/classes/class_control.html
+dependencies:
+  - Control
+  - Button / Label / Panel
+  - CanvasLayer
+  - SceneTree (change_scene_to_file)
+steps:
+  - name: UI düğümü kur
+    detail: >
+      Control tabanlı bir node (örn. MarginContainer > VBoxContainer > Button) oluştur.
+      Anchor/Offset ile ekrana hizala.
+  - name: Sinyal bağla
+    detail: >
+      Düğmenin "pressed" sinyalini bir fonksiyona bağla (editor veya code ile).
+  - name: Sahne geçişi
+    detail: >
+      get_tree().change_scene_to_file("res://scenes/level_1.tscn") ile geçiş yap.
+code_snippet: |
+  extends Control
+
+  @onready var start_button: Button = $VBox/StartButton
+
+  func _ready() -> void:
+      start_button.pressed.connect(_on_start_pressed)
+
+  func _on_start_pressed() -> void:
+      get_tree().change_scene_to_file("res://scenes/game.tscn")
+
+  # Geri dön (ESC)
+  func _unhandled_input(event: InputEvent) -> void:
+      if event.is_action_pressed("ui_cancel"):
+          get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+validation:
+  - ui_renders
+  - button_press_works
+  - scene_transition_works
+notes: >
+  - UI'yi oyun sahnesinden ayırmak için CanvasLayer kullan (kamera zoom'dan etkilenmez).
+  - Tema için Theme resource oluştur, düğme başına kopyalama.
+  - Mobil/dokunmatik için Button zaten touch'u destekler.

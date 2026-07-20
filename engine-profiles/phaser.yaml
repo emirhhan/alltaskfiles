@@ -1,0 +1,52 @@
+engine: phaser
+display_name: "Phaser 3"
+current_stable: "3.80.1"
+latest_checked: "3.87.0"
+release_model: "Semver minor (3.x kararlı)"
+license: "MIT"
+language: javascript
+alt_languages: [typescript]
+official_docs: "https://docs.phaser.io"
+
+supported_platforms:
+  - web (native tarayıcı)
+  - desktop (Electron / Tauri ile sarılır)
+  - mobile (Capacitor / Cordova ile sarılır)
+  - "iOS/Android (web-view tabanlı)"
+
+web_export:
+  method: "Statik site build (Vite/Webpack) -> index.html + JS"
+  runtime: "WebGL (Canvas fallback: Phaser.AUTO)"
+  notes: >
+    - Phaser doğrudan tarayıcıda çalışır; build aracı yalnızca bundling içindir.
+    - base: './' kullanmazsan alt klasör deploy bozulur.
+    - CORS: farklı domain'den asset yükleniyorsa başlık gerekebilir.
+
+windows_build:
+  method: "Electron / Capacitor ile masaüstü paketleme"
+  requires: "Node.js + Electron builder"
+  notes: >
+    - Phaser native exe üretmez; web build'i bir kabukta sarılır.
+    - Dosya boyutu Electron nedeniyle büyük olur.
+    - İmzalama (code signing) Windows SmartScreen için önerilir.
+
+strengths:
+  - "Web native, tarayıcıda sıfır kurulum"
+  - "Hızlı 2D prototip"
+  - "Büyük topluluk + binlerce örnek"
+  - "Arcade/Matter fizik hazır"
+  - "CDN ile anında denenebilir"
+
+weaknesses:
+  - "Native masaüstü zayıf (Electron bağımlılığı)"
+  - "Çok büyük oyun için mimari yönetimi zor"
+  - "3D yok (sadece 2D/2.5D)"
+  - "Bellek yönetimi manuel (scene restart leak riski)"
+
+best_for:
+  - "Web oyunlar"
+  - "Hızlı 2D prototip"
+  - "Mobil web / casual oyun"
+
+recipe_coverage: "recipes/phaser/ (13 sistem)"
+template_coverage: "templates/game-templates/phaser_* (6 template)"

@@ -1,0 +1,55 @@
+engine: godot
+display_name: "Godot Engine"
+current_stable: "4.3"
+latest_checked: "4.4-dev"
+release_model: "Düzenli minor (4.x), ara sıra LTS"
+license: "MIT"
+language: gdscript
+alt_languages: [csharp, cpp, rust(gdextension)]
+official_docs: "https://docs.godotengine.org"
+
+supported_platforms:
+  - windows
+  - linux
+  - macos
+  - web (HTML5 / WebGL2)
+  - android
+  - ios
+
+web_export:
+  method: "Editor > Project > Export > Web"
+  runtime: "WebGL2 (WebGL1 fallback yok)"
+  notes: >
+    - Tek dosya (HTML+WASM+PCK) üretir.
+    - Tarayıcıda IndexedDB ile user:// emülasyonu.
+    - Threading sınırlı; çok iş parçacığı gereken sistemler yavaş olabilir.
+    - Eski tarayıcılar WebGL2 desteklemez.
+
+windows_build:
+  method: "Editor > Project > Export > Windows Desktop"
+  requires: "Export templates (bir kez indirilir)"
+  notes: >
+    - Embed PCK seçeneği ile tek .exe.
+    - Antivirüs yanlış pozitif yapabilir; code signing önerilir.
+    - 32/64-bit seçeneği.
+
+strengths:
+  - "Yerleşik tam editör (sahne, kod, debug, profiler)"
+  - "Node tabanlı mimari, öğrenmesi kolay"
+  - "2D için çok olgun (TileMap, AnimationPlayer, CanvasItem)"
+  - "Tamamen ücretsiz, açık kaynak, MIT"
+  - "Tek tıkla çok platform export"
+
+weaknesses:
+  - "Web performansı Phaser'e göre daha düşük olabilir"
+  - "3D orta seviye (AAA değil)"
+  - "Büyük ekip için versiyon kontrolü zor (binary .tscn)"
+  - "C# desteği .NET 6+ gerektirir, export boyutu artar"
+
+best_for:
+  - "2D indie oyunlar"
+  - "Hızlı prototip"
+  - "Mobil + desktop + web tek kod tabanı"
+
+recipe_coverage: "recipes/godot/ (13 sistem)"
+template_coverage: "templates/game-templates/godot_* (6 template)"
