@@ -1,7 +1,7 @@
 # Phaser 2D Platformer Template
 
-Phaser 3 (JavaScript) ile minimal çalışan 2D platformer başlangıç şablonu.
-CDN üzerinden Phaser yüklenir; build aracı gerekmez.
+Phaser 3 (JavaScript, ES Modules) ile minimal çalışan 2D platformer başlangıç şablonu.
+Phaser NPM paketi üzerinden import edilir; Vite ile build alınır (CDN kullanılmaz).
 
 ## Özellikler
 - Arcade physics hareket + zıplama
@@ -12,14 +12,18 @@ CDN üzerinden Phaser yüklenir; build aracı gerekmez.
 ## Çalıştırma
 ```bash
 cd templates/game-templates/phaser_2d_platformer
-python -m http.server 8080
-# tarayıcıda http://localhost:8080 aç
+npm install
+npm run dev      # geliştirme sunucusu (http://localhost:5173)
+# veya
+npm run build    # production build -> dist/
+npm run preview  # build çıktısını önizle
 ```
-Veya: `npx serve .`
 
 ## Dosya Yapısı
 ```
 phaser_2d_platformer/
+├── package.json
+├── vite.config.js
 ├── index.html
 └── src/
     ├── main.js          # Phaser.Game config
@@ -29,5 +33,6 @@ phaser_2d_platformer/
 ```
 
 ## Notlar
-- `main.js` içinde `parent: 'game'` ile index.html'deki `<div id="game">`'e bağlanır.
+- `main.js` içinde `import Phaser from 'phaser'` ile NPM paketinden yüklenir.
+- `parent: 'game'` ile index.html'deki `<div id="game">`'e bağlanır.
 - Daha fazla sistem için `recipes/phaser/` klasörüne bak.

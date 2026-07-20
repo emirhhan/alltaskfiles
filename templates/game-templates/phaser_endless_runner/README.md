@@ -6,5 +6,9 @@ rastgele engel spawn + çarpışma ile oyun sonu.
 ## Çalıştırma
 ```bash
 cd templates/game-templates/phaser_endless_runner
-python -m http.server 8084
+npm install
+npm run dev      # geliştirme sunucusu (http://localhost:5173)
+# veya
+npm run build    # production build -> dist/
+npm run preview  # build çıktısını önizle
 ```

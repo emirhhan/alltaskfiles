@@ -6,6 +6,9 @@ düşman kovala AI, hasar/sağlık + invincibility frame.
 ## Çalıştırma
 ```bash
 cd templates/game-templates/phaser_topdown_action
-python -m http.server 8081
-# tarayıcıda http://localhost:8081
+npm install
+npm run dev      # geliştirme sunucusu (http://localhost:5173)
+# veya
+npm run build    # production build -> dist/
+npm run preview  # build çıktısını önizle
 ```

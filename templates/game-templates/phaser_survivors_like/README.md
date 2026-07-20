@@ -6,5 +6,9 @@ düşman kovala. `recipes/phaser/spawn_system.yaml` ve `object_pooling.yaml` ile
 ## Çalıştırma
 ```bash
 cd templates/game-templates/phaser_survivors_like
-python -m http.server 8082
+npm install
+npm run dev      # geliştirme sunucusu (http://localhost:5173)
+# veya
+npm run build    # production build -> dist/
+npm run preview  # build çıktısını önizle
 ```

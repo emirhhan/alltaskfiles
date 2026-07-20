@@ -6,5 +6,9 @@ UI gösterimi.
 ## Çalıştırma
 ```bash
 cd templates/game-templates/phaser_idle_clicker
-python -m http.server 8085
+npm install
+npm run dev      # geliştirme sunucusu (http://localhost:5173)
+# veya
+npm run build    # production build -> dist/
+npm run preview  # build çıktısını önizle
 ```
