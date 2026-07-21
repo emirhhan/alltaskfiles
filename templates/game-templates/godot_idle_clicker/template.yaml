@@ -1,0 +1,21 @@
+template: godot_idle_clicker
+engine: godot
+engine_version: "4.7.1"
+language: gdscript
+type: idle_clicker
+entry_scene: res://scenes/main.tscn
+main_scene: res://scenes/main.tscn
+dependencies:
+  - Node2D
+  - Button
+scripts:
+  - scripts/clicker.gd
+scenes:
+  - scenes/main.tscn
+assets:
+  - icon.svg
+build:
+  web: "Editor > Project > Export > Web"
+  windows: "Editor > Project > Export > Windows Desktop"
+validation:
+  - headless_parse

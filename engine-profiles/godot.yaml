@@ -1,7 +1,7 @@
 engine: godot
 display_name: "Godot Engine"
-current_stable: "4.3"
-latest_checked: "4.4-dev"
+current_stable: "4.7.1"
+latest_checked: "4.7.1-stable"
 release_model: "Düzenli minor (4.x), ara sıra LTS"
 license: "MIT"
 language: gdscript
@@ -20,7 +20,9 @@ web_export:
   method: "Editor > Project > Export > Web"
   runtime: "WebGL2 (WebGL1 fallback yok)"
   notes: >
-    - Tek dosya (HTML+WASM+PCK) üretir.
+    - Web export varsayılan olarak ayrı dosyalar üretir: index.html + .wasm + .pck
+      (+ opsiyonel .js). Tek dosya (HTML+WASM+PCK birleşik) yalnızca
+      "Export" ayarında "One File" (v4.3+) seçeneğiyle elde edilir; varsayılan değildir.
     - Tarayıcıda IndexedDB ile user:// emülasyonu.
     - Threading sınırlı; çok iş parçacığı gereken sistemler yavaş olabilir.
     - Eski tarayıcılar WebGL2 desteklemez.
@@ -43,7 +45,7 @@ strengths:
 weaknesses:
   - "Web performansı Phaser'e göre daha düşük olabilir"
   - "3D orta seviye (AAA değil)"
-  - "Büyük ekip için versiyon kontrolü zor (binary .tscn)"
+  - "Büyük ekip için versiyon kontrolü zor (.tscn metin tabanlıdır; yalnızca .import/.godot önbellek dosyaları binary)"
   - "C# desteği .NET 6+ gerektirir, export boyutu artar"
 
 best_for:

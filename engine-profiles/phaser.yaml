@@ -1,7 +1,7 @@
 engine: phaser
 display_name: "Phaser 3"
-current_stable: "3.80.1"
-latest_checked: "3.87.0"
+current_stable: "3.90.0"
+latest_checked: "3.90.0"
 release_model: "Semver minor (3.x kararlı)"
 license: "MIT"
 language: javascript
@@ -13,6 +13,9 @@ supported_platforms:
   - desktop (Electron / Tauri ile sarılır)
   - mobile (Capacitor / Cordova ile sarılır)
   - "iOS/Android (web-view tabanlı)"
+
+# Not: Phaser 4 (4.2.1) ayrı bir ana sürüm; bu profil Phaser 3 (3.90.0) hedefler.
+# Phaser 3 API'si 3.x boyunca geriye dönük uyumludur.
 
 web_export:
   method: "Statik site build (Vite/Webpack) -> index.html + JS"

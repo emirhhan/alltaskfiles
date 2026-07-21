@@ -10,6 +10,7 @@ var _invincible := false
 
 func _ready() -> void:
 	hurtbox.area_entered.connect(_on_hurtbox_area_entered)
+	iframes.timeout.connect(_on_iframes_timeout)
 
 func _physics_process(delta: float) -> void:
 	var dir := Input.get_vector("move_left", "move_right", "move_up", "move_down")

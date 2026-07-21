@@ -1,0 +1,24 @@
+template: phaser_2d_platformer
+engine: phaser
+engine_version: "3.90.0"
+language: javascript
+type: platformer
+entry: index.html
+main: src/main.js
+build_tool: vite
+dependencies:
+  - phaser@3.90.0
+  - vite@^5.4.0
+scripts:
+  - dev: vite
+  - build: vite build
+  - preview: vite preview
+files:
+  - index.html
+  - package.json
+  - vite.config.js
+  - src/main.js
+  - src/scenes
+validation:
+  - npm_install
+  - npm_build

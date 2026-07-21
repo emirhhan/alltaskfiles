@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/emirhhan/alltaskfiles/schemas/skill.schema.json",
+  "title": "Fusion Game Skill",
+  "description": "Skill (uzman ajan kimliği) şeması. skills/**/*.md dosyalarının YAML front-matter'ı için doğrulama şeması.",
+  "type": "object",
+  "required": ["skill", "role", "owner", "priority"],
+  "additionalProperties": false,
+  "properties": {
+    "skill": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "role": { "type": "string" },
+    "owner": { "type": "string" },
+    "priority": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

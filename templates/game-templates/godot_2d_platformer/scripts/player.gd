@@ -13,8 +13,9 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = jump_velocity
 
-	# Çapraz normalizasyon
-	if velocity.length() > speed:
-		velocity = velocity.normalized() * speed
+	# Yalnızca yatay hızı sınırla; dikey (yerçekimi/zıplama) korunur.
+	# NOT: Tüm vektörü normalize etmek zıplamayı speed (300) sınırına hapseder,
+	# jump_velocity (-500) ölürdü. Bu yüzden sadece velocity.x clamp'lenir.
+	velocity.x = clampf(velocity.x, -speed, speed)
 
 	move_and_slide()

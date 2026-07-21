@@ -1,0 +1,12 @@
+[gd_scene load_steps=4 format=3 uid="uid://b8runplayer"]
+
+[ext_resource type="Script" path="res://scripts/player_runner.gd" id="1_pr"]
+
+[sub_resource type="RectangleShape2D" id="RectShape2D_pr"]
+size = Vector2(32, 48)
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_pr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectShape2D_pr")

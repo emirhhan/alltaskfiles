@@ -9,7 +9,7 @@
 
 | Konu | Godot 3.x | Godot 4.x | Not |
 |---|---|---|---|
-| Fizik callback | `_physics_process` | `_physics_process(delta)` | delta artık parametre |
+| Fizik callback | `_physics_process(delta)` | `_physics_process(delta)` | Godot 4'te delta parametre olarak geçer; 3.x'te de aynı imza kullanılır (geriye dönük uyumlu) |
 | Node referansı | `onready var x = $Child` | `@onready var x = $Child` | `@onready` zorunlu |
 | Fonksiyon | `func _ready()` | `func _ready() -> void` | dönüş tipi opsiyonel ama önerilir |
 | GDScript | `export var x` | `@export var x` | `@export` anotasyonu |
@@ -53,7 +53,7 @@ tüm recipe'lerde kullanılır. 2.x ile uyumsuz (Scene config farklı).
 | Hasar/Sağlık | Area2D overlap | physics overlap | eşit |
 | Ses | AudioStreamPlayer | this.sound | Phaser web-native |
 | Mobil kontrol | InputEventScreenTouch | pointer + Scale | eşit |
-| Web build | Export preset (WASM) | Statik site (Vite) | Phaser daha hafif |
+| Web build | Export preset (WASM + .pck, isteğe bağlı tek dosya) | Statik site (Vite) | Phaser daha hafif |
 | Windows build | Native export | Electron gerekir | **Godot daha iyi** |
 
 **Özet öneri (Technical Director için):**

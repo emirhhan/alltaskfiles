@@ -1,0 +1,23 @@
+template: godot_2d_platformer
+engine: godot
+engine_version: "4.7.1"
+language: gdscript
+type: platformer
+entry_scene: res://scenes/main.tscn
+main_scene: res://scenes/main.tscn
+dependencies:
+  - CharacterBody2D
+  - CollisionShape2D
+  - Camera2D
+scripts:
+  - scripts/player.gd
+scenes:
+  - scenes/main.tscn
+  - scenes/player.tscn
+assets:
+  - icon.svg
+build:
+  web: "Editor > Project > Export > Web"
+  windows: "Editor > Project > Export > Windows Desktop"
+validation:
+  - headless_parse

@@ -1,0 +1,27 @@
+template: godot_endless_runner
+engine: godot
+engine_version: "4.7.1"
+language: gdscript
+type: endless_runner
+entry_scene: res://scenes/main.tscn
+main_scene: res://scenes/main.tscn
+dependencies:
+  - CharacterBody2D
+  - StaticBody2D
+  - CollisionShape2D
+  - Timer
+scripts:
+  - scripts/player_runner.gd
+  - scripts/runner.gd
+  - scripts/obstacle.gd
+scenes:
+  - scenes/main.tscn
+  - scenes/player.tscn
+  - scenes/obstacle.tscn
+assets:
+  - icon.svg
+build:
+  web: "Editor > Project > Export > Web"
+  windows: "Editor > Project > Export > Windows Desktop"
+validation:
+  - headless_parse

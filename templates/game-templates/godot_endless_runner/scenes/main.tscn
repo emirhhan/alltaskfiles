@@ -1,21 +1,24 @@
-[gd_scene load_steps=4 format=3 uid="uid://b8runmain"]
+[gd_scene load_steps=6 format=3 uid="uid://b8runmain"]
 
-[ext_resource type="Script" path="res://scripts/player_runner.gd" id="1_pr"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="1_pr"]
 [ext_resource type="Script" path="res://scripts/runner.gd" id="2_run"]
+
+[sub_resource type="RectangleShape2D" id="RectShape2D_ground"]
+size = Vector2(1024, 40)
 
 [sub_resource type="RectangleShape2D" id="RectShape2D_pr"]
 size = Vector2(32, 48)
 
 [node name="World" type="Node2D"]
 
-[node name="Ground" type="Node2D" parent="."]
-position = Vector2(0, 560)
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(512, 560)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("RectShape2D_ground")
 
 [node name="Player" parent="." instance=ExtResource("1_pr")]
 position = Vector2(200, 500)
-
-[node name="CollisionShape2D" parent="Player" id="CollisionShape2D_pr"]
-shape = SubResource("RectShape2D_pr")
 
 [node name="Runner" type="Node2D" parent="."]
 script = ExtResource("2_run")
